@@ -91,7 +91,7 @@ function displayDate(dateValue: string) {
   return `${day}/${month}/${year}`;
 }
 
-export default function InterpInvoicePage(): any {
+export default function Interpreter InvoicePage(): any {
   const [form, setForm] = useState<any>({
     interpreterName: "Bora Gurcay",
     interpreterEmail: "bora.gurcay@example.com",
@@ -314,9 +314,9 @@ export default function InterpInvoicePage(): any {
       <div className="no-print mx-auto max-w-6xl space-y-6">
         <header className="rounded-3xl bg-white p-6 shadow-sm border border-slate-200">
           <p className="text-sm font-semibold text-blue-700">Prototype / Demo only</p>
-          <h1 className="mt-2 text-3xl font-bold tracking-tight">InterpInvoice</h1>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight">Interpreter Invoice</h1>
           <p className="mt-2 max-w-3xl text-slate-600">
-            A guided interpreter invoice builder with invoice-number generation, service-only HST,
+            A guided invoice builder for court interpreters with invoice-number generation, service-only HST,
             minimum hours, rounding, mileage threshold logic, and receipt validation.
           </p>
         </header>
@@ -560,6 +560,9 @@ This is a prototype-generated invoice email for testing only.
             </Card>
           </aside>
         </div>
+              <footer className="pb-6 text-center text-xs text-slate-500">
+          Built by Bora Gurcay • Interpreter Invoice
+        </footer>
       </div>
           <OfficialInvoicePrint form={form} result={result} invoiceNumber={invoiceNumber} />
     </main>

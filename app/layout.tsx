@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Interpreter Invoice Builder",
+  title: "Interpreter Invoice",
   description: "Professional invoice builder for court interpreters",
 };
 
@@ -29,9 +29,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <PasswordGate>
-          {children}
-        </PasswordGate>
+        <PasswordGate>{children}</PasswordGate>
       </body>
     </html>
   );
