@@ -91,7 +91,7 @@ function displayDate(dateValue: string) {
   return `${day}/${month}/${year}`;
 }
 
-export default function Interpreter InvoicePage(): any {
+export default function InterpreterInvoicePage(): any {
   const [form, setForm] = useState<any>({
     interpreterName: "Bora Gurcay",
     interpreterEmail: "bora.gurcay@example.com",
