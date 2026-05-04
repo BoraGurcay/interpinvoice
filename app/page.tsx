@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { supabase } from "../lib/supabaseClient";
 
 const COURTS = [
   { label: "10 Armoury Street, Toronto OCJ", code: "4810" },
@@ -92,6 +93,8 @@ function displayDate(dateValue: string) {
 }
 
 export default function InterpreterInvoicePage(): any {
+  const [saveStatus, setSaveStatus] = useState("");
+
   const [form, setForm] = useState<any>({
     interpreterName: "Bora Gurcay",
     interpreterEmail: "bora.gurcay@example.com",
@@ -124,7 +127,7 @@ export default function InterpreterInvoicePage(): any {
     secondEndTime: "16:30",
     noLunchTaken: false,
     travelTimeHours: "4",
-    annualMileageUsedKm: "4900",
+    annualMileageUsedKm: "250",
     mileageKm: "200",
     parking: { selected: true, amount: "25", fileName: "parking-receipt.jpg" },
     transit: { ...emptyReceipt },
@@ -283,8 +286,8 @@ export default function InterpreterInvoicePage(): any {
       problems.push("Remote assignment has travel time entered. Confirm this is correct.");
     }
 
-    if (Number(form.travelTimeHours || 0) >= 4) {
-      problems.push("Travel time is 4 hours or more. Staff review recommended.");
+    if (Number(form.travelTimeHours || 0) >= 8) {
+      problems.push("Travel time is 8 hours or more. Staff review recommended.");
     }
 
     if (result.reducedKm > 0) {
@@ -299,6 +302,54 @@ export default function InterpreterInvoicePage(): any {
   }, [form, result.reducedKm]);
 
   const ready = validation.length === 0;
+
+  async function handleSaveInvoice() {
+    setSaveStatus("Saving invoice...");
+
+    const { error } = await supabase.from("invoices").insert([
+      {
+        invoice_number: invoiceNumber,
+        interpreter_name: form.interpreterName,
+        interpreter_email: form.interpreterEmail,
+        interpreter_address: form.interpreterAddress,
+        supplier_number: form.supplierNumber,
+        hst_registration_number: form.claimsHst ? form.hstRegistrationNumber : null,
+        date_of_service: form.dateOfService,
+        invoice_date: form.invoiceDate,
+        court_location: form.courtLocation,
+        court_code: getCourtCode(form.courtLocation),
+        language: form.language,
+        assignment_type: form.assignmentType,
+        mode: form.mode,
+        accreditation: form.accreditation,
+        total_billable_hours: result.totalBillableHours,
+        attendance_fee: result.attendanceFee,
+        travel_time_hours: result.travelTimeHours,
+        travel_time_fee: result.travelTimeFee,
+        mileage_km: result.currentKm,
+        mileage_fee: result.mileageFee,
+        expenses_total: result.expenseTotal,
+        hst_amount: result.hst,
+        grand_total: result.grandTotal,
+        status: "submitted-demo",
+        special_notes: form.specialNotes,
+        raw_data: {
+          form,
+          result,
+          invoiceNumber,
+          savedFrom: "Interpreter Invoice prototype",
+        },
+      },
+    ]);
+
+    if (error) {
+      console.error("Supabase save error:", error);
+      setSaveStatus(`Save failed: ${error.message}`);
+      return;
+    }
+
+    setSaveStatus("Invoice saved to Supabase ✅");
+  }
 
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-6 text-slate-900">
@@ -507,6 +558,22 @@ export default function InterpreterInvoicePage(): any {
 
               <button
                 className={`mt-4 w-full rounded-2xl px-4 py-3 font-semibold shadow-sm ${
+                  ready ? "bg-green-700 text-white hover:bg-green-800" : "bg-slate-200 text-slate-500 cursor-not-allowed"
+                }`}
+                disabled={!ready}
+                onClick={handleSaveInvoice}
+              >
+                Save Invoice to Dashboard
+              </button>
+
+              {saveStatus && (
+                <p className="mt-2 rounded-2xl bg-slate-100 px-4 py-3 text-sm text-slate-700">
+                  {saveStatus}
+                </p>
+              )}
+
+              <button
+                className={`mt-3 w-full rounded-2xl px-4 py-3 font-semibold shadow-sm ${
                   ready ? "bg-blue-700 text-white hover:bg-blue-800" : "bg-slate-200 text-slate-500 cursor-not-allowed"
                 }`}
                 disabled={!ready}
