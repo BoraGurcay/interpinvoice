@@ -6,7 +6,7 @@ export default function PasswordGate({ children }) {
   const [authorized, setAuthorized] = useState(false);
   const [input, setInput] = useState("");
 
-  const PASSWORD = "interpinvoice2026";
+  const PASSWORD = "interpreter2026";
 
   useEffect(() => {
     const saved = sessionStorage.getItem("access_granted");
